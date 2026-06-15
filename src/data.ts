@@ -1,3 +1,10 @@
+export type EnergyLevel = 'low' | 'medium' | 'high'
+
+export interface DailyEnergy {
+  date: string
+  value: number
+}
+
 export interface BuildingData {
   id: string
   name: string
@@ -10,6 +17,8 @@ export interface BuildingData {
   occupancyRate: number
   enterprises: string[]
   floorsData: FloorData[]
+  todayEnergy: number
+  weeklyEnergy: DailyEnergy[]
 }
 
 export interface FloorData {
@@ -60,6 +69,16 @@ export const buildings: BuildingData[] = [
       { floor: 17, name: '17F', occupancy: 85, maxOccupancy: 100, tenant: '行政办公' },
       { floor: 18, name: '18F', occupancy: 60, maxOccupancy: 100, tenant: '空中花园' },
     ],
+    todayEnergy: 6820,
+    weeklyEnergy: [
+      { date: '06-10', value: 6240 },
+      { date: '06-11', value: 6580 },
+      { date: '06-12', value: 5920 },
+      { date: '06-13', value: 7100 },
+      { date: '06-14', value: 6890 },
+      { date: '06-15', value: 6450 },
+      { date: '06-16', value: 6820 },
+    ],
   },
   {
     id: 'office-b',
@@ -89,6 +108,16 @@ export const buildings: BuildingData[] = [
       { floor: 14, name: '14F', occupancy: 92, maxOccupancy: 100, tenant: '展厅' },
       { floor: 15, name: '15F', occupancy: 70, maxOccupancy: 100, tenant: '屋顶花园' },
     ],
+    todayEnergy: 5640,
+    weeklyEnergy: [
+      { date: '06-10', value: 5120 },
+      { date: '06-11', value: 5480 },
+      { date: '06-12', value: 4960 },
+      { date: '06-13', value: 5820 },
+      { date: '06-14', value: 5690 },
+      { date: '06-15', value: 5340 },
+      { date: '06-16', value: 5640 },
+    ],
   },
   {
     id: 'factory-a',
@@ -105,6 +134,16 @@ export const buildings: BuildingData[] = [
       { floor: 1, name: '1F', occupancy: 98, maxOccupancy: 100, tenant: '宁德时代 · 产线A' },
       { floor: 2, name: '2F', occupancy: 95, maxOccupancy: 100, tenant: '宁德时代 · 产线B' },
       { floor: 3, name: '3F', occupancy: 92, maxOccupancy: 100, tenant: '比亚迪电子' },
+    ],
+    todayEnergy: 7350,
+    weeklyEnergy: [
+      { date: '06-10', value: 6890 },
+      { date: '06-11', value: 7120 },
+      { date: '06-12', value: 6540 },
+      { date: '06-13', value: 7580 },
+      { date: '06-14', value: 7420 },
+      { date: '06-15', value: 7010 },
+      { date: '06-16', value: 7350 },
     ],
   },
   {
@@ -123,6 +162,16 @@ export const buildings: BuildingData[] = [
       { floor: 2, name: '2F', occupancy: 85, maxOccupancy: 100, tenant: '药明康德 · 生产' },
       { floor: 3, name: '3F', occupancy: 92, maxOccupancy: 100, tenant: '恒瑞医药' },
       { floor: 4, name: '4F', occupancy: 82, maxOccupancy: 100, tenant: '恒瑞医药' },
+    ],
+    todayEnergy: 4680,
+    weeklyEnergy: [
+      { date: '06-10', value: 4210 },
+      { date: '06-11', value: 4560 },
+      { date: '06-12', value: 4020 },
+      { date: '06-13', value: 4890 },
+      { date: '06-14', value: 4750 },
+      { date: '06-15', value: 4380 },
+      { date: '06-16', value: 4680 },
     ],
   },
   {
@@ -146,6 +195,16 @@ export const buildings: BuildingData[] = [
       { floor: 7, name: '7F', occupancy: 88, maxOccupancy: 100, tenant: '联合实验室' },
       { floor: 8, name: '8F', occupancy: 95, maxOccupancy: 100, tenant: '学术报告厅' },
     ],
+    todayEnergy: 2890,
+    weeklyEnergy: [
+      { date: '06-10', value: 2540 },
+      { date: '06-11', value: 2780 },
+      { date: '06-12', value: 2320 },
+      { date: '06-13', value: 3010 },
+      { date: '06-14', value: 2920 },
+      { date: '06-15', value: 2680 },
+      { date: '06-16', value: 2890 },
+    ],
   },
   {
     id: 'complex',
@@ -165,8 +224,36 @@ export const buildings: BuildingData[] = [
       { floor: 4, name: '4F', occupancy: 100, maxOccupancy: 100, tenant: '会议中心' },
       { floor: 5, name: '5F', occupancy: 100, maxOccupancy: 100, tenant: '行政服务大厅' },
     ],
+    todayEnergy: 1076,
+    weeklyEnergy: [
+      { date: '06-10', value: 980 },
+      { date: '06-11', value: 1050 },
+      { date: '06-12', value: 890 },
+      { date: '06-13', value: 1120 },
+      { date: '06-14', value: 1080 },
+      { date: '06-15', value: 1020 },
+      { date: '06-16', value: 1076 },
+    ],
   },
 ]
+
+export function getEnergyLevel(energy: number): EnergyLevel {
+  if (energy >= 6000) return 'high'
+  if (energy >= 3000) return 'medium'
+  return 'low'
+}
+
+export const energyLevelColors: Record<EnergyLevel, string> = {
+  low: '#22c55e',
+  medium: '#f59e0b',
+  high: '#ef4444',
+}
+
+export const energyLevelLabels: Record<EnergyLevel, string> = {
+  low: '低能耗',
+  medium: '中能耗',
+  high: '高能耗',
+}
 
 export const parkStats: ParkStats = {
   totalOccupancy: 93.5,

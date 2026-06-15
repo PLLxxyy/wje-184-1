@@ -2,7 +2,7 @@ import React, { useRef, useState, useMemo } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { OrbitControls, Html, Text } from '@react-three/drei'
 import * as THREE from 'three'
-import { BuildingData } from '../data'
+import { BuildingData, getEnergyLevel, energyLevelColors } from '../data'
 
 interface SceneProps {
   buildings: BuildingData[]
@@ -142,7 +142,14 @@ function Building({
     setGlowIntensity(THREE.MathUtils.lerp(glowIntensity, targetGlow, delta * 6))
   })
 
-  const displayColor = isSelected ? data.highlightColor : data.color
+  const energyLevel = getEnergyLevel(data.todayEnergy)
+  const baseColor = energyLevelColors[energyLevel]
+  const highlightColor = useMemo(() => {
+    const c = new THREE.Color(baseColor)
+    c.offsetHSL(0, 0, 0.2)
+    return '#' + c.getHexString()
+  }, [baseColor])
+  const displayColor = isSelected ? highlightColor : baseColor
 
   return (
     <group>

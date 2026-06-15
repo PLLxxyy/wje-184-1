@@ -1,6 +1,22 @@
 import React, { useState, useCallback } from 'react'
 import ParkScene from './components/Scene'
-import { buildings, parkStats, BuildingData } from './data'
+import {
+  buildings,
+  parkStats,
+  BuildingData,
+  getEnergyLevel,
+  energyLevelColors,
+  energyLevelLabels,
+} from './data'
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from 'recharts'
 
 type ViewMode = 'bird' | 'ground' | 'inside'
 
@@ -124,6 +140,65 @@ export default function App() {
               <div className="info-row">
                 <span className="info-label">入驻率</span>
                 <span className="info-value rate">{selectedBuilding.occupancyRate}%</span>
+              </div>
+              <div className="info-row">
+                <span className="info-label">今日能耗</span>
+                <span
+                  className="info-value"
+                  style={{ color: energyLevelColors[getEnergyLevel(selectedBuilding.todayEnergy)] }}
+                >
+                  {selectedBuilding.todayEnergy.toLocaleString()} kWh
+                </span>
+              </div>
+              <div className="info-row">
+                <span className="info-label">能耗等级</span>
+                <span
+                  className="info-value"
+                  style={{ color: energyLevelColors[getEnergyLevel(selectedBuilding.todayEnergy)] }}
+                >
+                  {energyLevelLabels[getEnergyLevel(selectedBuilding.todayEnergy)]}
+                </span>
+              </div>
+              <div className="info-enterprises">
+                <div className="info-enterprises-title">近七天用电趋势</div>
+                <div style={{ width: '100%', height: 140, marginTop: 8 }}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={selectedBuilding.weeklyEnergy}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(59, 130, 246, 0.1)" />
+                      <XAxis
+                        dataKey="date"
+                        tick={{ fill: '#64748b', fontSize: 11 }}
+                        axisLine={{ stroke: 'rgba(59, 130, 246, 0.2)' }}
+                        tickLine={false}
+                      />
+                      <YAxis
+                        tick={{ fill: '#64748b', fontSize: 11 }}
+                        axisLine={{ stroke: 'rgba(59, 130, 246, 0.2)' }}
+                        tickLine={false}
+                        width={45}
+                      />
+                      <Tooltip
+                        contentStyle={{
+                          background: 'rgba(15, 23, 42, 0.95)',
+                          border: '1px solid rgba(59, 130, 246, 0.3)',
+                          borderRadius: '8px',
+                          color: '#e0e6f0',
+                          fontSize: '12px',
+                        }}
+                        formatter={(value: number) => [`${value} kWh`, '用电量']}
+                        labelStyle={{ color: '#94a3b8' }}
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="value"
+                        stroke={energyLevelColors[getEnergyLevel(selectedBuilding.todayEnergy)]}
+                        strokeWidth={2}
+                        dot={{ fill: energyLevelColors[getEnergyLevel(selectedBuilding.todayEnergy)], r: 3 }}
+                        activeDot={{ r: 5 }}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
               </div>
               <div className="info-enterprises">
                 <div className="info-enterprises-title">入驻企业</div>
