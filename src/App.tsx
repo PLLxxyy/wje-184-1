@@ -93,11 +93,28 @@ export default function App() {
                 className={`building-item ${selectedBuilding?.id === b.id ? 'active' : ''}`}
                 onClick={() => handleBuildingListClick(b)}
               >
-                <div className="building-item-dot" style={{ background: b.color }} />
+                <div
+                  className="building-item-dot"
+                  style={{ background: energyLevelColors[getEnergyLevel(b.todayEnergy)] }}
+                />
                 <span className="building-item-name">{b.name}</span>
                 <span className="building-item-type">{b.type}</span>
               </div>
             ))}
+          </div>
+          <div className="energy-legend">
+            <div className="energy-legend-title">能耗图例</div>
+            <div className="energy-legend-items">
+              {(['low', 'medium', 'high'] as const).map((level) => (
+                <div key={level} className="energy-legend-item">
+                  <div
+                    className="energy-legend-dot"
+                    style={{ background: energyLevelColors[level] }}
+                  />
+                  <span className="energy-legend-label">{energyLevelLabels[level]}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
